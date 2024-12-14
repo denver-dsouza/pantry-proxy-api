@@ -10,6 +10,10 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const PANTRY_ID = process.env.PANTRY_ID;
 
+const PANTRY_API_BASE_URL = `https://getpantry.cloud/apiv1/pantry/${PANTRY_ID}/basket`;
+
+app.use(cors());
+app.use(express.json);
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
@@ -17,6 +21,17 @@ app.get('/', (req, res) => {
 
 app.get('/favicon.ico', (req, res) => {
     res.sendFile(path.join(__dirname, 'favicon.ico'));
+});
+
+// Generic handler for GET request to fetch data from specific basket
+app.get('/:basketName', async (req, res) => {
+    const { basketName } = req.params;
+    try {
+        const response = await axios.get(`${PANTRY_API_BASE_URL}/${basketName}`);
+        res.json(response.data);
+    } catch (error) {
+        res.status(500).json({error: error.message});
+    }
 });
 
 app.listen(PORT, () => {
