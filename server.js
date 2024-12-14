@@ -34,6 +34,41 @@ app.get('/:basketName', async (req, res) => {
     }
 });
 
+// Generic handler for POST request to add new data to the specific basket
+app.post('/:basketName', async (req, res) => {
+    const { basketName } = req.params;
+    const newData = req.body;
+    try {
+        const response = await axios.post(`${PANTRY_API_BASE_URL}/${basketName}`, newData);
+        res.json(response.data);
+    } catch (error) {
+        res.status(500).json({error: error.message});
+    }
+});
+
+// Generic handler for PUT request to update data in a specific basket
+app.put('/:basketName', async (req, res) => {
+    const { basketName } = req.params;
+    const newData = req.body;
+    try {
+        const response = await axios.put(`${PANTRY_API_BASE_URL}/${basketName}`, newData);
+        res.json(response.data);
+    } catch (error) {
+        res.status(500).json({error: error.message});
+    }
+});
+
+// Generic handler for Delete request to delete a specific basket
+app.delete('/:basketName', async (req, res) => {
+    const { basketName } = req.params;
+    try {
+        const response = await axios.delete(`${PANTRY_API_BASE_URL}/${basketName}`);
+        res.json({ message: `Basket ${basketName} cleared successfully!`});
+    } catch (error) {
+        res.status(500).json({error: error.message});
+    }
+});
+
 app.listen(PORT, () => {
     console.log(`Server running on port http://localhost:${PORT}`);
 });
